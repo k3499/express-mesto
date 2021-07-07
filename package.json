@@ -1,0 +1,32 @@
+{
+  "name": "express-mesto",
+  "version": "1.0.0",
+  "description": "`/routes` — папка с файлами роутера  \r `/controllers` — папка с файлами контроллеров пользователя и карточки   \r `/models` — папка с файлами описания схем пользователя и карточки",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "eslint ./public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/k3499/express-mesto.git"
+  },
+  "keywords": [],
+  "author": "k3499",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/k3499/express-mesto/issues"
+  },
+  "homepage": "https://github.com/k3499/express-mesto#readme",
+  "dependencies": {
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.9"
+  }
+}
