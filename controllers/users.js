@@ -1,49 +1,97 @@
 const User = require('../models/user');
-const {ERR_CODE_404, ERR_CODE_400, ERR_CODE_200} = require('../serverErrors.js');
+const { ERR_CODE_404, ERR_CODE_400, ERR_CODE_200 } = require('../serverErrors');
 
 const getUsers = (req, res) => {
-  return User.find({})
-  .then( users => res.status(ERR_CODE_200).send(users))
-  .catch( err => res.status(ERR_CODE_400).send(err) )
+  User.find({})
+    .then((users) => res.status(ERR_CODE_200).send(users))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
+      } else if (err.name === 'NotFound') {
+        res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
+      }
+    });
 };
 
 const getUser = (req, res) => {
   User.findById(req.params.userId)
-  .then( (user) => {
-    if (!user) {
-      return res.status(ERR_CODE_404).send({message: 'Запрашиваемый пользователь не найден'});
-    }
-    return res.status(ERR_CODE_200).send(user);
-  })
-  .catch( err => res.status(ERR_CODE_400).send(err) )
+    .orFail(new Error('NotValidId'))
+    .then((user) => {
+      res.status(ERR_CODE_200).send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
+      } else if (err.name === 'NotFound') {
+        res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
+      }
+    });
 };
 
 const addUser = (req, res) => {
-  const data = { ...req.body};
+  const data = { ...req.body };
 
   return User.create(data)
-    .then(user => res.status(ERR_CODE_200).send(user))
-    .catch( (err) => res.status(ERR_CODE_400).send(err) );
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.status(ERR_CODE_200).send(user))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
+      } else if (err.name === 'NotFound') {
+        res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
+      }
+    });
 };
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;
 
-  return User.findByIdAndUpdate(req.user._id, { name, about })
-    .then(user => res.status(ERR_CODE_200).send(user))
-    .catch( (err) => res.status(ERR_CODE_400).send(err) );
+  return User.findByIdAndUpdate(req.user._id, { name, about }, {
+    runValidators: true,
+    new: true,
+  })
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.status(ERR_CODE_200).send(user))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
+      } else if (err.name === 'NotFound') {
+        res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
+      }
+    });
 };
 
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate( req.user._id, { avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar }, {
+    runValidators: true,
+    new: true,
+  })
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      if (!user) {
-        return res.status(ERR_CODE_404).send({message: 'Запрашиваемый пользователь не найден'});
-      }
       res.send({ data: user });
     })
-    .catch( (err) => res.status(ERR_CODE_400).send(err) );
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
+      } else if (err.name === 'NotFound') {
+        res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
+      }
+    });
 };
 
-module.exports = {getUsers, getUser, addUser, updateUser, updateAvatar};
+module.exports = {
+
+  getUsers, getUser, addUser, updateUser, updateAvatar,
+
+};

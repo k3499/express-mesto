@@ -20,13 +20,14 @@
   },
   "homepage": "https://github.com/k3499/express-mesto#readme",
   "dependencies": {
-    "eslint": "^7.30.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.23.4",
     "express": "^4.17.1",
+    "helmet": "^4.6.0",
     "mongoose": "^5.13.2"
   },
   "devDependencies": {
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4",
     "nodemon": "^2.0.9"
   }
 }
