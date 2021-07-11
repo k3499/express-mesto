@@ -24,7 +24,7 @@ const getUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
-      } else if (err.name === 'NotFound') {
+      } else if (err.message === 'NotValidId') {
         res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
@@ -36,13 +36,10 @@ const addUser = (req, res) => {
   const data = { ...req.body };
 
   return User.create(data)
-    .orFail(new Error('NotValidId'))
     .then((user) => res.status(ERR_CODE_200).send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
-      } else if (err.name === 'NotFound') {
-        res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
+      if (err.name === 'ValidationError') {
+        res.status(ERR_CODE_400).send(err);
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
       }
@@ -61,7 +58,7 @@ const updateUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
-      } else if (err.name === 'NotFound') {
+      } else if (err.message === 'NotValidId') {
         res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
@@ -82,7 +79,7 @@ const updateAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
-      } else if (err.name === 'NotFound') {
+      } else if (err.message === 'NotValidId') {
         res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });

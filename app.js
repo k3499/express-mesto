@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const path = require('path');
 const users = require('./routes/users');
 const cards = require('./routes/cards');
 
@@ -17,7 +16,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 app.use(helmet());
-app.use('/', express.static(path.join(__dirname, '.', 'public')));
 app.use((req, res, next) => {
   req.user = {
     _id: '60e57080f6514757343d3fa0',

@@ -16,7 +16,7 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
-      } else if (err.name === 'NotFound') {
+      } else if (err.message === 'NotValidId') {
         res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
@@ -27,15 +27,12 @@ const deleteCard = (req, res) => {
 const addCard = (req, res) => {
   const { name, link, owner = req.user._id } = req.body;
   Card.create({ name, link, owner })
-    .orFail(new Error('NotValidId'))
     .then((card) => {
       res.status(ERR_CODE_200).send(card);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
-      } else if (err.name === 'NotFound') {
-        res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
+      if (err.name === 'ValidationError') {
+        res.status(ERR_CODE_400).send(err);
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
       }
@@ -55,7 +52,7 @@ const addLike = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
-      } else if (err.name === 'NotFound') {
+      } else if (err.message === 'NotValidId') {
         res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
@@ -76,7 +73,7 @@ const removeLike = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERR_CODE_400).send({ message: 'Переданы некоректные данные' });
-      } else if (err.name === 'NotFound') {
+      } else if (err.message === 'NotValidId') {
         res.status(ERR_CODE_404).send({ message: 'Объект не найден' });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
