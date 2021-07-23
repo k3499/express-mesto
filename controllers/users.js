@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken'); //
+
 const User = require('../models/user');
 const { ERR_CODE_404, ERR_CODE_400, ERR_CODE_200 } = require('../serverErrors');
 
@@ -32,17 +35,63 @@ const getUser = (req, res) => {
     });
 };
 
-const addUser = (req, res) => {
-  const data = { ...req.body };
-
-  return User.create(data)
-    .then((user) => res.status(ERR_CODE_200).send(user))
+const createUser = (req, res) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create(
+      { email,
+      password: hash,
+      name,
+      about,
+      avatar,
+     }
+     ))
+    .then((user) => res.status(ERR_CODE_200).send({ data: { _id: user._id, email: user.email } }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERR_CODE_400).send(err);
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
       }
+    });
+};
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+
+      return bcrypt.compare(password, user.password)
+      .then((matched) => {
+        if (!matched) {
+          // хеши не совпали — отклоняем промис
+          return Promise.reject(new Error('Неправильные почта или пароль'));
+        }
+
+        const token = jwt.sign(
+          { _id: user._id },
+          NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
+          { expiresIn: "7d" }
+        );
+        return res
+          .cookie("jwt", token, {
+            maxAge: 3600000 * 24 * 7,
+            httpOnly: true,
+            sameSite: true,
+          })
+          .send({ message: "Вы успешно авторизованны!" });
+      });
+    })
+    .catch(
+      res
+        .status(401)
+        .send({ message: "404" });
     });
 };
 
@@ -89,6 +138,6 @@ const updateAvatar = (req, res) => {
 
 module.exports = {
 
-  getUsers, getUser, addUser, updateUser, updateAvatar,
+  getUsers, getUser, createUser, updateUser, updateAvatar, login,
 
 };
