@@ -7,7 +7,7 @@ const {
 
 router.get('/users', getUsers);
 
-router.get("/users/me", getProfileInfo);
+router.get('/users/me', getProfileInfo);
 
 router.get('/users/:userId', getUser);
 
