@@ -7,6 +7,9 @@ const users = require('./routes/users');
 const cards = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const notRoutes = require("./routes/notRoutes");
+const allErrors = require("./errors/allErrors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -20,6 +23,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 app.use('/', express.json());
 app.use(helmet());
+app.use(cookieParser());
 
 app.post('/signin',
   celebrate({
@@ -42,29 +46,14 @@ app.post('/signup', celebrate({
 
 app.use(auth);
 
-app.use('/', users);
-app.use('/', cards);
+app.use(users);
+app.use(cards);
 
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
-});
+app.use(notRoutes);
 
 app.use(errors()); // обработчик celebrate
 
-app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(allErrors);
 
 app.listen(PORT, () => {
 
