@@ -10,6 +10,8 @@ const auth = require('./middlewares/auth');
 const notRoutes = require("./routes/notRoutes");
 const allErrors = require("./errors/allErrors");
 const cookieParser = require("cookie-parser");
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 
 const app = express();
 
@@ -24,6 +26,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use('/', express.json());
 app.use(helmet());
 app.use(cookieParser());
+app.use(requestLogger); // подключаем логгер запросов
 
 app.post('/signin',
   celebrate({
@@ -51,6 +54,7 @@ app.use(cards);
 
 app.use(notRoutes);
 
+app.use(errorLogger);
 app.use(errors()); // обработчик celebrate
 
 app.use(allErrors);
