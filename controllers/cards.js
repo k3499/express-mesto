@@ -1,9 +1,7 @@
 const Card = require('../models/card');
 const { ERR_CODE_200 } = require('../serverErrors');
 const BadRequest = require('../errors/bad-request-err');
-const Conflict = require('../errors/conflict');
 const NotFoundError = require('../errors/not-found-err');
-const Unauthorized = require('../errors/unauthorized');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -34,16 +32,16 @@ const addCard = (req, res, next) => {
       res.status(ERR_CODE_200).send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         next(
-          new BadRequest("Некорректные данные создания карточки.")
+          new BadRequest('Некорректные данные создания карточки.'),
         );
       }
       return next(err);
     });
 };
 
-const addLike = (req, res) => {
+const addLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -54,14 +52,14 @@ const addLike = (req, res) => {
       res.status(ERR_CODE_200).send({ card });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        next(new BadRequest("Некорректный ID карточки."));
+      if (err.name === 'CastError') {
+        next(new BadRequest('Некорректный ID карточки.'));
       }
       return next(err);
     });
 };
 
-const removeLike = (req, res) => {
+const removeLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
@@ -72,8 +70,8 @@ const removeLike = (req, res) => {
       res.status(ERR_CODE_200).send({ card });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        next(new BadRequest("Некорректный ID карточки."));
+      if (err.name === 'CastError') {
+        next(new BadRequest('Некорректный ID карточки.'));
       }
       return next(err);
     });
