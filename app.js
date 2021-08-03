@@ -48,7 +48,7 @@ app.use((req, res, next) => {
     // завершаем обработку запроса и возвращаем результат клиенту
     return res.end();
   }
-  return next();
+  next();
 });
 
 app.use(helmet());
