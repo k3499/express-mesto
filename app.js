@@ -26,7 +26,7 @@ app.use('/', express.json());
 
 const options = {
   origin: [
-    'http://localhost:3000',
+    'https://mesto.k3499.nomoredomains.club/',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
