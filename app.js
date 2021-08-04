@@ -29,7 +29,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useCreateIndex: true,
   useFindAndModify: false,
 });
-app.use('/', express.json());
+
 
 app.use((req, res, next) => {
   const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
@@ -51,6 +51,7 @@ app.use((req, res, next) => {
   return next();
 });
 
+app.use('/', express.json());
 app.use(helmet());
 app.use(cookieParser());
 app.use(requestLogger); // подключаем логгер запросов
