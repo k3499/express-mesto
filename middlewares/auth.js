@@ -1,15 +1,15 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-  const { Authorization } = req.headers;
+  const { authorization } = req.headers;
 
-  if (!Authorization || !Authorization.startsWith('Bearer ')) {
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     return res
       .status(401)
-      .send({ message: Authorization });
+      .send({ message: authorization });
   }
 
-  const token = Authorization.replace('Bearer ', '');
+  const token = authorization.replace('Bearer ', '');
 
   let payload;
   try {
