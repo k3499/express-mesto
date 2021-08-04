@@ -3,6 +3,7 @@ const Unauthorized = require('../errors/unauthorized');
 
 module.exports = (req, res, next) => {
   const token = req.token;
+  console.log(token);
   if (!token) {
     throw new Unauthorized('Необходима авторизация.');
   }
