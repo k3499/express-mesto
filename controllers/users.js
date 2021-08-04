@@ -92,14 +92,14 @@ const login = (req, res, next) => {
           { _id: user._id }, 'dev-secret',
           { expiresIn: '7d' },
         );
-
-        return res
-          .cookie('jwt', token, {
-            maxAge: 3600000 * 24 * 7,
-            httpOnly: true,
-            sameSite: true,
-          })
-          .send({ message: 'Вы успешно авторизованны!' });
+        res.send({ token });
+        // return res
+        //   .cookie('jwt', token, {
+        //     maxAge: 3600000 * 24 * 7,
+        //     httpOnly: true,
+        //     sameSite: true,
+        //   })
+        //   .send({ message: 'Вы успешно авторизованны!' });
       });
     })
     .catch(next);
