@@ -125,7 +125,7 @@ const updateAvatar = (req, res, next) => {
   })
     .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
