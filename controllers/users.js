@@ -6,6 +6,8 @@ const BadRequest = require('../errors/bad-request-err');
 const Conflict = require('../errors/conflict');
 const NotFoundError = require('../errors/not-found-err');
 const Unauthorized = require('../errors/unauthorized');
+require('dotenv').config();
+const { PORT = 3000, JWT_SECRET = 'dev-secret', NODE_ENV } = process.env;
 
 const getUsers = (req, res, next) => {
   User.find({})
