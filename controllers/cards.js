@@ -49,7 +49,7 @@ const addLike = (req, res, next) => {
   )
     .orFail(new NotFoundError('Некорректные данные для лайка.'))
     .then((card) => {
-      res.status(ERR_CODE_200).send( card );
+      res.status(ERR_CODE_200).send( card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -67,7 +67,7 @@ const removeLike = (req, res, next) => {
   )
     .orFail(new NotFoundError('Некорректные данные для дизлайка.'))
     .then((card) => {
-      res.status(ERR_CODE_200).send({ card });
+      res.status(ERR_CODE_200).send( card );
     })
     .catch((err) => {
       if (err.name === 'CastError') {
